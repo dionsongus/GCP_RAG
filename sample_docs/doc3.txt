@@ -1,0 +1,2 @@
+Vertex AI is a unified machine learning platform that allows you to build, deploy, and scale ML models. It provides tools for the entire ML lifecycle, from data labeling to model deployment and monitoring. Key services include Notebooks, Model Garden, Experiment tracking, and managed datasets.
+

@@ -1,0 +1,7 @@
+Flask
+google-cloud-aiplatform
+google-cloud-storage
+gunicorn # For production web server
+python-dotenv
+importlib-metadata==4.13.0
+

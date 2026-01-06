@@ -1,0 +1,2 @@
+Cloud Run is a managed compute platform that enables you to run stateless containers invocable via web requests or Pub/Sub events. Cloud Run is serverless: it abstracts away all infrastructure management, so you can focus on what matters most: building great applications. It automatically scales up and down from zero, depending on traffic.
+
