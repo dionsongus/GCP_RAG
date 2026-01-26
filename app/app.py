@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify
 from google.cloud import storage
 from google.cloud import aiplatform
 from dotenv import load_dotenv
+from vertexai.language_models import TextEmbeddingModel
 
 # Load environment variables for local development
 load_dotenv()
@@ -62,19 +63,10 @@ def get_llm():
 # ---------------------------------------------------------
 
 def get_embedding(text):
-    if not text:
-        return []
-
     try:
-        embedding_client = get_embedding_client()
-        model_path = get_embedding_model_path()
-
-        response = embedding_client.predict(
-            endpoint=model_path,
-            instances=[{"content": text}],
-        )
-        return response.predictions[0]["embeddings"]["values"]
-
+        model = TextEmbeddingModel.from_pretrained("text-embedding-004")
+        embedding = model.get_embeddings([text])[0].values
+        return embedding
     except Exception as e:
         app.logger.error(f"Error getting embedding: {e}")
         return []
@@ -135,10 +127,16 @@ def embed_docs_endpoint():
     })
 
 
-@app.route("/query", methods=["POST"])
+
+@app.route("/query", methods=["GET", "POST"])
 def query_rag():
-    data = request.json
-    user_query = data.get("query")
+    # --- Handle GET requests ---
+    if request.method == "GET":
+        user_query = request.args.get("q")  # e.g. /query?q=What+is+RAG
+    else:
+        # --- Handle POST requests (JSON) ---
+        data = request.json or {}
+        user_query = data.get("query")
 
     if not user_query:
         return jsonify({"error": "No query provided"}), 400
@@ -181,6 +179,7 @@ def query_rag():
         "answer": answer,
         "retrieved_context": relevant_docs
     })
+
 
 
 # ---------------------------------------------------------
